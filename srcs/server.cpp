@@ -267,6 +267,31 @@ int Server::step_six_sendMsgToOthers( )
 	//_popoll.fd = _new_fd[User];
 	std::cout << "ETAPE 6   BUF: " << _buf /*Server: Bienvenue, veuillez taper votre pass.)"*/ << std::endl;
 
+	for(_j = 0; _j <= _fdmax; _j++) 
+    {
+        // send to everyone!
+        if (FD_ISSET(_j, &_master)) 
+        {
+            // except the listener and ourselves
+            if (_j != _sockfd && _j != _i) 
+            {
+/**test**/
+std::cout << "fd_who_send_message [" << _i << "]" << std::endl;
+std::cout << "message is [" << _buf << "]" << std::endl;
+std::cout << "Which fd also get msg[" << _j << "]" << std::endl;
+/**test**/
+std::cout << "_j= " << _j << std::endl;
+                if (send(_j, _buf, _nbytesReceived, 0) == -1) 
+                {
+                    perror("step 6 send");
+                }
+            }
+        }
+    // END handle data from client
+    // END got new incoming connection
+    // END looping through file descriptors
+    // END for(;;)--and you thought it would never end!
+    }
 
 	// if (poll(&_popoll, 1, 10000000) == 1)
 	// {

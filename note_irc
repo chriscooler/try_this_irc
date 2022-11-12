@@ -1,0 +1,46 @@
+creer liste de container
+    std::map<int, User *> _listUser;
+    std::map<int, User*>::iterator _it;  
+    std::map<int, User*>::iterator _ite;  _ite = _listUser.end();
+
+creer channel 
+    
+regarder test_server.cpp
+line79 le FD_ISSET indique un event sur un FD 
+                3 cas
+
+1. _i = _listener --> nouvelle connection (step_four)
+2. _i != _listen  --> un User envoie un message (step six)
+3. _nbytesReceived <= 0 --> Bad conncetion (step 5)
+
+(step 4)
+1. Accept --> donner un new_fd 
+    et creer un nouveu user
+2. verfier si new_fd != -1( get_in_addr);
+3. ajouter au FD_ISSET
+
+(step 6)
+4. Authentification -->
+    1. verfier si c'est NC ou IRSS -> definir le bool _irssi; true or false
+        1. NC
+            mettre en place une Authentification
+                recuperer nick, user, pass
+                verifier les infos(est-ce que password OK? nick existe deja? )
+                Si infos OK :
+                    -> creer USer(fd, nick ,... ) et stocker
+                    -> ajouter le User AU CHANNEL Principal
+                si infos NON OK :
+                    close()
+                    remove du set FD_CLEAR
+
+        2.Irssi
+            parser les arguments (CAP LS NICK USER)
+            recuperer nick, user, pass
+            verifier les infos(est-ce que password OK? nick existe deja? )
+                si Info OK:  ->faire les reply
+                           ->creer USer(fd, nick ,... ) et stocker
+                si infos NON OK :
+                    close()
+                    remove du set FD_CLEAR
+
+    

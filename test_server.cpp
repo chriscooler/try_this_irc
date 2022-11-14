@@ -182,7 +182,13 @@ void Server::step_four_acceptNewConnection()
         inet_ntop(_remoteaddr.ss_family,
             get_in_addr((struct sockaddr*)&_remoteaddr),
                 _remoteIP, INET6_ADDRSTRLEN),_newfd);
+
+         //creer User
+         User *usr = new User();
+
     }
+   
+
 }
 
 void Server::step_five_removeInactiveUser()

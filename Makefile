@@ -21,7 +21,7 @@ endif
 
 CC				= clang++
 
-CFLAGS  		= -I ./headers -Wall -Wextra -Werror #-fsanitize=address -g3
+CFLAGS  		= -I ./headers -Wall -Wextra -Werror -fsanitize=address -g3
 
 CPPFLAGS		= -std=c++98
 
@@ -72,4 +72,4 @@ fclean:	clean
 	@${RM} $(NAME)
 	@printf "$(YELLOW) *.o, $(GREEN)${NAME} $(RED)delete.\n"
 
-.PHONY: 		all clean fclean re
+.PHONY: all clean fclean re

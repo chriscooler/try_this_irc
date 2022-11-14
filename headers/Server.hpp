@@ -4,13 +4,22 @@
 #include "User.hpp"
 #include "Command.hpp"
 #include "error.hpp"
+#include <map>
 
 #define BACKLOG 10   // how many pending connections queue will hold
+
+using namespace std;
 class User;
 
 class Server
 {
     private:
+
+    std::map<int, User *> _listUser;
+    std::map<int, User*>::iterator _it;  
+    std::map<int, User*>::iterator _ite; // _ite = _listUser.end();
+
+
 
 	std::vector<std::string> _line;
 	std::vector<std::string> _all_commands;
@@ -119,6 +128,9 @@ class Server
     void    errorMessage( User user, int numReply, std::string arg);
     std::string	ft_addback(std::vector<std::string> str, std::string add, int begin=0);
 
+    bool    fd_registered(int fd);
+    User    *getUserbyfd(int fd);
+    void    ft_finish_registration(int fd);
  };
 
  class errorExcute : public std::exception {

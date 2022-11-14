@@ -116,8 +116,8 @@ void	Server::step_zero(char *port, char *pwd)
 					// handle data from a client
                     _nbytesReceived = recv(_i, _buf, sizeof _buf, 0);
                     //_buf[_nbytesReceived] = '\0';
-					cout << "Passe ELSE" << endl;
-                    cout << "Before [4] buf: " << _buf << "\nnBytes: "<< _nbytesReceived << endl;
+					//cout << "Passe ELSE" << endl;
+                    //cout << "Before [4] buf: " << _buf << "\nnBytes: "<< _nbytesReceived << endl;
                     if (_nbytesReceived <= 0)
                         step_five_removeInactiveUser();
                   	else 
@@ -241,7 +241,9 @@ void Server::step_four_acceptNewConnection( )
 		inet_ntop(_their_addr.ss_family,
 			get_in_addr((struct sockaddr*)&_their_addr),
                 _remoteIP, INET6_ADDRSTRLEN), _nFd);
-	
+	User *usr = new User(_nFd, "Nouveau", "", "","","","", false, false);
+	_listUser[_nFd] = usr;
+
 	//Check_ID(_remoteIP);
 }
 
@@ -261,12 +263,72 @@ void Server::step_five_removeInactiveUser()
     FD_CLR(_i, &_master); // remove from master set
 }
 
+User *Server::getUserbyfd(int fd)
+{
+	_it = _listUser.begin();
+	while (_it != _listUser.end())
+	{
+		cout << "in _listUser fd: " << _it->first << endl;
+
+		if (_it->first == fd){
+			cout << "User nick : " << _it->second->getNick() << endl;
+			return _it->second;
+		}	
+		_it++;
+	}
+		return (NULL);
+}
+
+bool Server::fd_registered(int fd)
+{
+	User *usr = getUserbyfd(fd);
+	if (usr == NULL)
+		cout << "User Ptr est NULL" << endl;
+	bool result = usr->getRegistred();
+	return ( result );
+}
+
+void Server::ft_finish_registration(int fd)
+{
+	User *user = getUserbyfd(fd);
+	
+	user->setRegistred(true);
+	// for ()
+	// {
+
+	// }
+
+	// recuperer le buff et parsingpour avoir le nick , username, password
+	// le nick verfiver si il est exite deja? si second->getnick() == nick : byebye ou si pass pas 
+	// ok
+	// 	oui : deconnecter
+	// 	delete user dans le container;
+	// 	earse user;
+	// 	//close(_i); // bye!    
+    // 	//FD_CLR(_i, &_master); // remove from master set
+
+	// 	si OK usr->setnick(nick) setUserName... et setRegistred(true)
+		
+		 
+	// Si registration ok : user->setRegistred(true);
+	// Sinon Bye bye User, close....
+	//else
+	//close(_i); // bye!    
+    //FD_CLR(_i, &_master); // remove from master set
+
+}
+
 int Server::step_six_sendMsgToOthers( )
 {
 	cout << "Entree Step [6]" << endl;
 	//_popoll.fd = _new_fd[User];
-	std::cout << "ETAPE 6   BUF: " << _buf /*Server: Bienvenue, veuillez taper votre pass.)"*/ << std::endl;
-
+	std::cout << "ETAPE 6 -->BUF: " << _buf /*Server: Bienvenue, veuillez taper votre pass.)"*/ << std::endl;
+	if (fd_registered(_i) == false)  
+	{
+		ft_finish_registration(_i);
+	}
+	else
+	{
 	for(_j = 0; _j <= _fdmax; _j++) 
     {
         // send to everyone!
@@ -275,23 +337,20 @@ int Server::step_six_sendMsgToOthers( )
             // except the listener and ourselves
             if (_j != _sockfd && _j != _i) 
             {
-/**test**/
+/*test
 std::cout << "fd_who_send_message [" << _i << "]" << std::endl;
 std::cout << "message is [" << _buf << "]" << std::endl;
 std::cout << "Which fd also get msg[" << _j << "]" << std::endl;
-/**test**/
 std::cout << "_j= " << _j << std::endl;
+*/
                 if (send(_j, _buf, _nbytesReceived, 0) == -1) 
                 {
                     perror("step 6 send");
                 }
             }
         }
-    // END handle data from client
-    // END got new incoming connection
-    // END looping through file descriptors
-    // END for(;;)--and you thought it would never end!
     }
+	}
 
 	// if (poll(&_popoll, 1, 10000000) == 1)
 	// {

@@ -4,6 +4,7 @@
 # include "headers.hpp"
 # include "error.hpp"
 # include "tools.hpp"
+# include "Server.hpp"
 
 //class ;
 
@@ -21,6 +22,7 @@ class User
 		std::string					_passwd;
 		// time_t 					*_last_act;
 		bool						_ping_status;
+		bool						_registred;
 		
 
     public:
@@ -29,6 +31,8 @@ class User
         User( int fd );
 		User( int fd, std::string nick, std::string username, std::string hostname,
 			std::string servername, std::string realname, std::string mode, bool ping_status );
+		User( int fd, std::string nick, std::string username, std::string hostname,
+			std::string servername, std::string realname, std::string mode, bool ping_status, bool registred );
 		User( User const &src );
 		~User( void );
         User				&operator=( User const &rhs );
@@ -42,6 +46,7 @@ class User
 		std::string const			&getServername( void ) const;
 		std::string const			&getRealName( void ) const;
 		std::string const			&getPasswd( void ) const;
+		bool						getRegistred(void) const { return _registred; }
 
         //setters
 
@@ -53,6 +58,8 @@ class User
 		void			setRealname( std::string realname );
 		void			setNick( std::string nick);
 		void			setIsSet( bool isset );
+		void			setRegistred(bool registred) { _registred = registred;}
+
 };
 
 #endif
